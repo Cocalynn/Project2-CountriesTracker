@@ -6,6 +6,13 @@
       <input type="text" name="username" placeholder="Your username" />
     </label>
 
+    <label> Nationality</label>
+    <select name="nationality" id="nationality">
+      {{#each nationalities}}  <!-- nationalities is an array of strings -->
+        <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+
     <label> Email
       <input type="email" name="email" placeholder="Your email" />
     </label>
