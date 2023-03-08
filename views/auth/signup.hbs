@@ -1,6 +1,18 @@
-<div id="form">
+<div>
+  <nav> 
+    <div>
+      <img src="" alt="logo">
+    </div>
+    <ul>
+      <li><a href="/visited">Visited</a></li>
+      <li><a href="/wishlist">Wishlist</a></li>
+      <li><a href="/aboutus">About Us</a></li>
+    </ul>
+  </nav>
+</div>
+<div id="form" >
   <h2>Sign Up</h2>
-  <form action="/auth/signup" method="POST">
+  <form action="/auth/signup">
 
     <label> Username
       <input type="text" name="username" placeholder="Your username" />
@@ -9,7 +21,7 @@
     <label> Nationality</label>
     <select name="nationality" id="nationality">
       {{#each nationalities}}  <!-- nationalities is an array of strings -->
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{this.name}}">{{this.name}}</option>
       {{/each}}
     </select>
 
