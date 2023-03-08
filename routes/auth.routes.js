@@ -213,7 +213,7 @@ const nationalitiesArr = [
 ]
 const nationalities = nationalitiesArr.map(x=>{return {name:x}})
 
-// home page
+// home page -> To be continued later
 router.get("/", (req, res) => {
   res.render("auth/signup", {nationalities});
 });
@@ -226,13 +226,14 @@ router.get("/signup", isLoggedOut, (req, res) => {
 
 // POST /auth/signup
 router.post("/signup", isLoggedOut, (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, nationality } = req.body;
 
   // Check that username, email, and password are provided
-  if (username === "" || email === "" || password === "") {
+  if (username === "" || email === "" || password === "" || nationality === "") {
     res.status(400).render("auth/signup", {
+      nationalities: nationalities,
       errorMessage:
-        "All fields are mandatory. Please provide your username, email and password.",
+        "All fields are mandatory. Please provide your username, nationality, email and password.",
     });
 
     return;
@@ -240,6 +241,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
 
   if (password.length < 6) {
     res.status(400).render("auth/signup", {
+      nationalities: nationalities,
       errorMessage: "Your password needs to be at least 6 characters long.",
     });
 
@@ -265,7 +267,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
     .then((salt) => bcrypt.hash(password, salt))
     .then((hashedPassword) => {
       // Create a user and save it in the database
-      return User.create({ username, email, password: hashedPassword });
+      return User.create({ username, email, nationality, passwordHash: hashedPassword });
     })
     .then((user) => {
       res.redirect("/auth/login");
@@ -275,6 +277,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
         res.status(500).render("auth/signup", { errorMessage: error.message });
       } else if (error.code === 11000) {
         res.status(500).render("auth/signup", {
+          nationalities: nationalities,
           errorMessage:
             "Username and email need to be unique. Provide a valid username or email.",
         });
