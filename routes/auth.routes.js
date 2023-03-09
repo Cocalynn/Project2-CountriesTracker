@@ -215,13 +215,13 @@ const nationalities = nationalitiesArr.map(x=>{return {name:x}})
 
 // home page -> To be continued later
 router.get("/", (req, res) => {
-  res.render("auth/signup", {nationalities});
+  res.render("auth/signup", {nationalities: nationalities, layout: "layout/guest-layout"});
 });
 
 
 // GET /auth/signup
 router.get("/signup", isLoggedOut, (req, res) => {
-  res.render("auth/signup", {nationalities});
+  res.render("auth/signup", {nationalities: nationalities, layout: "layout/guest-layout"});
 });
 
 // POST /auth/signup
@@ -256,7 +256,9 @@ router.post("/signup", isLoggedOut, (req, res) => {
     res
       .status(400)
       .render("auth/signup", {
-        errorMessage: "Password needs to have at least 6 chars and must contain at least one number, one lowercase and one uppercase letter."
+        nationalities: nationalities,
+        errorMessage: "Password needs to have at least 6 chars and must contain at least one number, one lowercase and one uppercase letter.",
+        layout: "layout/guest-layout"
     });
     return;
   }
@@ -274,7 +276,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
     })
     .catch((error) => {
       if (error instanceof mongoose.Error.ValidationError) {
-        res.status(500).render("auth/signup", { errorMessage: error.message });
+        res.status(500).render("auth/signup", { errorMessage: error.message, layout: "layout/guest-layout" });
       } else if (error.code === 11000) {
         res.status(500).render("auth/signup", {
           nationalities: nationalities,
@@ -289,7 +291,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
 
 // GET /auth/login
 router.get("/login", isLoggedOut, (req, res) => {
-  res.render("auth/login");
+  res.render("auth/login", {layout: "layout/guest-layout"});
 });
 
 // POST /auth/login
@@ -313,7 +315,7 @@ router.post("/login", isLoggedOut, (req, res, next) => {
       if (!user) {
         res
           .status(400)
-          .render("auth/login", { errorMessage: "Wrong credentials." });
+          .render("auth/login", { errorMessage: "Wrong credentials." , layout: "layout/guest-layout"});
         return;
       }
 
@@ -324,7 +326,7 @@ router.post("/login", isLoggedOut, (req, res, next) => {
           if (!isSamePassword) {
             res
               .status(400)
-              .render("auth/login", { errorMessage: "Wrong credentials." });
+              .render("auth/login", { errorMessage: "Wrong credentials.", layout: "layout/guest-layout" });
             return;
           }
 
