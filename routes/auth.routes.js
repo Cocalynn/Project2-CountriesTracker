@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // ℹ️ Handles password encryption
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 
 // How many rounds should bcrypt run the salt (default - 10 rounds)
@@ -11,9 +11,10 @@ const saltRounds = 10;
 // Require the User model in order to interact with the database
 const User = require("../models/User.model");
 
-// Require necessary (isLoggedOut and isLiggedIn) middleware in order to control access to specific routes
+// Require necessary middleware in order to control access to specific routes
 const isLoggedOut = require("../middleware/isLoggedOut");
 const isLoggedIn = require("../middleware/isLoggedIn");
+const isAdmin = require("../middleware/isAdmin");
 
 // make the array of nationalities array of objects instead of strings
 const nationalitiesArr = [
@@ -213,7 +214,7 @@ const nationalitiesArr = [
 ]
 const nationalities = nationalitiesArr.map(x=>{return {name:x}})
 
-// home page -> To be continued later
+// Home page 
 router.get("/", (req, res) => {
   res.render("auth/signup", {nationalities: nationalities, layout: "layout/guest-layout"});
 });
@@ -272,7 +273,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
       return User.create({ username, email, nationality, passwordHash: hashedPassword });
     })
     .then((user) => {
-      res.redirect("/auth/login");
+      res.redirect("/login");
     })
     .catch((error) => {
       if (error instanceof mongoose.Error.ValidationError) {
@@ -296,6 +297,7 @@ router.get("/login", isLoggedOut, (req, res) => {
 
 // POST /auth/login
 router.post("/login", isLoggedOut, (req, res, next) => {
+  console.log("SESSION =====> ", req.session); // test
   const { username, email, password } = req.body;
 
   // Check that username, email, and password are provided
@@ -307,7 +309,6 @@ router.post("/login", isLoggedOut, (req, res, next) => {
 
     return;
   }
-
   // Search the database for a user with the email submitted in the form
   User.findOne({ email })
     .then((user) => {
@@ -318,28 +319,20 @@ router.post("/login", isLoggedOut, (req, res, next) => {
           .render("auth/login", { errorMessage: "Wrong credentials." , layout: "layout/guest-layout"});
         return;
       }
-
       // If user is found based on the username, check if the in putted password matches the one saved in the database
-      bcrypt
-        .compare(password, user.password)
-        .then((isSamePassword) => {
-          if (!isSamePassword) {
-            res
-              .status(400)
-              .render("auth/login", { errorMessage: "Wrong credentials.", layout: "layout/guest-layout" });
-            return;
-          }
-
-          // Add the user object to the session object
-          req.session.currentUser = user.toObject();
-          // Remove the password field
-          delete req.session.currentUser.password;
-
-          res.redirect("/");
-        })
-        .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+      else if (bcrypt.compareSync(password, user.passwordHash)) {
+        req.session.currentUser = user;
+        res.redirect("/userProfile");
+      } else {
+        // if the two passwords DON'T match, render the login form again
+        // and send the error message to the user
+        res.render("auth/login", {
+          errorMessage: "Incorrect password.",
+          layout: 'guest-layout.hbs'
+        });
+      }
     })
-    .catch((err) => next(err));
+    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
 
 // GET /auth/logout
@@ -352,6 +345,11 @@ router.get("/logout", isLoggedIn, (req, res) => {
 
     res.redirect("/");
   });
+});
+
+
+router.get("/userProfile", isLoggedIn, (req, res) => {
+  res.render("user/user-profile", { userInSession: req.session.currentUser, layout: "layout/user-layout" });
 });
 
 module.exports = router;
