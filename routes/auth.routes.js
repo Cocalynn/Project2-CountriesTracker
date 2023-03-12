@@ -220,12 +220,12 @@ router.get("/", (req, res) => {
 });
 
 
-// GET /auth/signup
+// GET /signup
 router.get("/signup", isLoggedOut, (req, res) => {
   res.render("auth/signup", {nationalities: nationalities, layout: "layout/guest-layout"});
 });
 
-// POST /auth/signup
+// POST /signup
 router.post("/signup", isLoggedOut, (req, res) => {
   const { username, email, password, nationality } = req.body;
 
@@ -290,12 +290,12 @@ router.post("/signup", isLoggedOut, (req, res) => {
     });
 });
 
-// GET /auth/login
+// GET /login
 router.get("/login", isLoggedOut, (req, res) => {
   res.render("auth/login", {layout: "layout/guest-layout"});
 });
 
-// POST /auth/login
+// POST /login
 router.post("/login", isLoggedOut, (req, res, next) => {
   console.log("SESSION =====> ", req.session); // test
   const { username, email, password } = req.body;
@@ -335,21 +335,36 @@ router.post("/login", isLoggedOut, (req, res, next) => {
     .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
 
-// GET /auth/logout
-router.get("/logout", isLoggedIn, (req, res) => {
+// GET /logout
+// router.get("/logout", isLoggedIn, (req, res) => {
+//   req.session.destroy((err) => {
+//     if (err) {
+//       res.status(500).render("auth/logout", { errorMessage: err.message });
+//       return;
+//     }
+//     res.redirect("/");
+//   });
+// });
+
+// POST /logout
+router.post("/logout", isLoggedIn, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       res.status(500).render("auth/logout", { errorMessage: err.message });
       return;
     }
-
     res.redirect("/");
   });
 });
 
 
 router.get("/userProfile", isLoggedIn, (req, res) => {
-  res.render("user/user-profile", { userInSession: req.session.currentUser, layout: "layout/user-layout" });
+  if (req.session.currentUser.role === "user") {
+    res.render("user/user-profile", { userInSession: req.session.currentUser, layout: "layout/user-layout" });
+  }
+  else if (req.session.currentUser.role === "admin") {
+  res.render("user/user-profile", { userInSession: req.session.currentUser, layout: "layout/admin-layout" });
+  }
 });
 
 module.exports = router;

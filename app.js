@@ -28,6 +28,13 @@ app.locals.appTitle = `${capitalize(projectName)} created with IronLauncher`;
 const authRoutes = require("./routes/auth.routes");
 app.use("/", authRoutes);
 
+const countryRoutes = require("./routes/country.routes");
+app.use("/", countryRoutes);
+
+const aboutRoutes = require("./routes/about.routes");
+app.use("/", aboutRoutes);
+
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 
