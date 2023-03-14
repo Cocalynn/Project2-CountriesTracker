@@ -16,18 +16,6 @@ const chart = root.container.children.push(
   })
 );
 
-// Add a Popup
-/*const popup = root.container.children.push(
-  am5.Popup.new(root, {
-    // Set up the modal popup configuration
-    modal: true,
-    content: "<div id='modal-container'></div>",
-    className: "modal",
-    closeButton: true,
-    closeOnOutsideClick: true,
-  })
-);*/
-
 // Create main polygon series for countries
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/
 const polygonSeries = chart.series.push(
@@ -60,7 +48,29 @@ chart.chartContainer.get("background").events.on("click", function () {
 
 polygonSeries.mapPolygons.template.events.on("click", function (ev) {
   const countryId = ev.target.dataItem.dataContext.name;
+  const isActive = ev.target.dataItem.dataContext.isActive;
+  console.log(isActive);
   console.log("Clicked on:", countryId);
+
+  // If country is active, don't update visitedTimes
+  if (isActive) {
+    return;
+  }
+
+  // Otherwise, update visitedTimes and set isActive to true
+  ev.target.dataItem.dataContext.isActive = true;
+  fetch(`/api/countries/${countryId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      visitedTimes: 1, // Increase visitedTimes by 1
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+    .catch((error) => console.error(error));
 });
 
 // Add zoom control
