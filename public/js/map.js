@@ -46,7 +46,7 @@ chart.chartContainer.get("background").events.on("click", function () {
 
 // Catch the country click event
 
-polygonSeries.mapPolygons.template.events.on("click", function (ev) {
+polygonSeries.mapPolygons.template.events.once("click", function (ev) {
   const countryId = ev.target.dataItem.dataContext.name;
   const isActive = ev.target.dataItem.dataContext.isActive;
   console.log(isActive);
@@ -59,7 +59,7 @@ polygonSeries.mapPolygons.template.events.on("click", function (ev) {
 
   // Otherwise, update visitedTimes and set isActive to true
   ev.target.dataItem.dataContext.isActive = true;
-  fetch(`/api/countries/${countryId}`, {
+  fetch(`/api/countries/${countryId}/visited`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -94,6 +94,7 @@ const homeButton = zoomControl.children.moveValue(
  */
 const exporting = am5plugins_exporting.Exporting.new(root, {
   menu: am5plugins_exporting.ExportingMenu.new(root, {}),
+  filePrefix: "myVisitedMap",
 });
 
 homeButton.events.on("click", function () {

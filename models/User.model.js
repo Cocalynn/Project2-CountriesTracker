@@ -209,9 +209,19 @@ const userSchema = new Schema(
         "Welsh",
         "Yemenite",
         "Zambian",
-        "Zimbabwean"
-      ], 
+        "Zimbabwean",
+      ],
     },
+    visitedCountries: [
+      {
+        type: String,
+      },
+    ],
+    plannedCountries: [
+      {
+        type: String,
+      },
+    ],
     email: {
       type: String,
       required: [true, "Email is required."],
@@ -222,13 +232,13 @@ const userSchema = new Schema(
     },
     passwordHash: {
       type: String,
-      required: [true, "Password is required."]
+      required: [true, "Password is required."],
     },
-  },{
+  },
+  {
     // adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
 
 module.exports = model("User", userSchema);
-
