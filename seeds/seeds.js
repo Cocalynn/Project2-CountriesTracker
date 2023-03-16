@@ -208,6 +208,14 @@ const users = [
         nationality: "Chinese",
         email: "testAdmin@ironhack.com",
         passwordHash: bcrypt.hashSync("Admin123!", bcrypt.genSaltSync(bcryptSalt)),
+        visitedCountries: [
+            {from:"China", to:"Japan"},
+            {from:"China", to:"United States"},
+            {from:"China", to:"Mexico"},
+        ],
+        plannedCountries: [
+            "Australia","Canada","France","Germany","Italy","Japan","Mexico"
+        ]
         
     },
     {
@@ -216,6 +224,12 @@ const users = [
         nationality: "American",
         email: "testUser@ironhack.com",
         passwordHash: bcrypt.hashSync("User123!", bcrypt.genSaltSync(bcryptSalt)),
+        visitedCountries: [
+            {from:"United States", to:"Mexico"},
+        ],
+        plannedCountries: [
+            "France","Germany","Japan","Mexico","Spain"
+        ]
     }
 ]
 
