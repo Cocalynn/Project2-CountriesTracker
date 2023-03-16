@@ -209,13 +209,31 @@ const users = [
         email: "testAdmin@ironhack.com",
         passwordHash: bcrypt.hashSync("Admin123!", bcrypt.genSaltSync(bcryptSalt)),
         visitedCountries: [
-            {from:"China", to:"Japan"},
-            {from:"China", to:"United States"},
-            {from:"China", to:"Mexico"},
+            {
+                from:{
+                    country: "China",
+                    coordinates: [116.4074, 39.9042] 
+                    // Beijing, 
+                    // Coordinates may differ from different users who visited China
+                    // This will depend on where they click on the map  
+                },
+                to:{
+                    country: "United States",
+                    coordinates: [-95.7129, 37.0902]
+                }
+            },
+            {
+                from:{
+                    country: "United States",
+                    coordinates: [-95.7129, 37.0902]
+                },
+                to:{
+                    country: "Mexico",
+                    coordinates: [-99.1332, 19.4326]
+                }
+            }
         ],
-        plannedCountries: [
-            "Australia","Canada","France","Germany","Italy","Japan","Mexico"
-        ]
+        plannedCountries: ["Australia","Canada","France","Germany","Italy","Japan","Mexico"]
         
     },
     {
