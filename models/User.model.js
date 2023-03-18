@@ -212,6 +212,23 @@ const userSchema = new Schema(
         "Zimbabwean"
       ], 
     },
+      visitedCountries: [
+      {
+        from: {
+          country:String,
+          coordinates: [Number,Number]
+        }, 
+        to: {
+          country:String,
+          coordinates: [Number,Number]
+        }
+      }
+    ],
+    plannedCountries: [
+      {
+        type: String,
+      },
+    ],
     email: {
       type: String,
       required: [true, "Email is required."],
