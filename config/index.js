@@ -25,6 +25,8 @@ const session = require("express-session");
 // https://www.npmjs.com/package/connect-mongo
 const MongoStore = require("connect-mongo");
 
+require("dotenv").config();
+
 // Connects the mongo uri to maintain the same naming structure
 const MONGO_URI =
   process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/countries-tracker";

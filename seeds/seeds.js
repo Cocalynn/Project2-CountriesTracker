@@ -3,6 +3,7 @@ const User = require("../models/User.model");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
+require("dotenv").config();
 
 const countries = [
     // countries in total: 193, should be consistent with the enum in User.model.js and map.js library
@@ -214,7 +215,7 @@ const users = [
                     country: "China",
                     coordinates: [116.4074, 39.9042] 
                     // Beijing, 
-                    // Coordinates may differ from different users who visited China
+                    // Coordinates may differ from users who visited China
                     // This will depend on where they click on the map  
                 },
                 to:{
@@ -252,8 +253,10 @@ const users = [
 ]
 
 
-const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/countries-tracker'
+//const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/countries-tracker'
+const MONGO_URL = 'mongodb://localhost:27017/countries-tracker'
 
+console.log(MONGO_URL)
 mongoose
     .connect(MONGO_URL, { useNewUrlParser: true })
     .then((x) => {

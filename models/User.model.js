@@ -213,7 +213,16 @@ const userSchema = new Schema(
       ],
     },
     visitedCountries: [
-      {from: String, to: String}
+      {
+        from: {
+          country:String,
+          coordinates: [Number,Number]
+        }, 
+        to: {
+          country:String,
+          coordinates: [Number,Number]
+        }
+      }
     ],
     plannedCountries: [
       {

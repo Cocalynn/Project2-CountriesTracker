@@ -31,6 +31,13 @@ polygonSeries.mapPolygons.template.setAll({
     interactive: true,
 });
 
+//only for testing purpose
+let visitedCountries = [
+
+];
+
+let currentCoordinates = [0,0];
+let departureCountry, arrivalCountry, departureCoordinates, arrivalCoordinates;
 let isDepartureLocked = false;
 let isArrivalLocked = true;
 polygonSeries.mapPolygons.template.events.once("click", function (ev) {
@@ -39,6 +46,7 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
 
     let departureConfirmButton = document.getElementById("country-departure-confirm");
     let arrivalConfirmButton = document.getElementById("country-arrival-confirm");
+    let journeyConfirmButton = document.getElementById("journey-confirm");
 
     if (!isDepartureLocked) {
         let departure = document.getElementById("country-departure");
@@ -66,8 +74,13 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         arrivalConfirmButton.innerHTML = "Confirm";
         // enable the arrival input
         isArrivalLocked = false;
-    }
 
+        // set the current coordinates as the departure coordinates
+        // data is stored in currentCoordinates
+        // needs to be sent to the database
+        departureCountry = countryId;
+        departureCoordinates = currentCoordinates;
+    }
     arrivalConfirmButton.onclick = function() {
         isArrivalLocked = true;
         // lock the value of arrival.innerHTML
@@ -76,12 +89,29 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         arrivalConfirmButton.style.color = "white";
         arrivalConfirmButton.style.cursor = "not-allowed";
         arrivalConfirmButton.innerHTML = "Confirmed";
+        arrivalCountry = countryId;
+        arrivalCoordinates = currentCoordinates;
+    }    
+    journeyConfirmButton.onclick = function() {
+        // send the data to the database
+        visitedCountries.push(
+          {
+            from: {
+              country: departureCountry,
+              coordinates: departureCoordinates
+            },
+            to: {
+              country: arrivalCountry,
+              coordinates: arrivalCoordinates
+            }
+          }
+        );
+      route._settings.geometry.coordinates.push([ departureCoordinates, arrivalCoordinates ]); // push new data here
+      console.log(visitedCountries);
     }
 
-
-    
-
 });
+
 
 polygonSeries.mapPolygons.template.states.create("hover", {
 fill: root.interfaceColors.get("primaryButtonHover"), // hover color
@@ -95,6 +125,83 @@ fill: root.interfaceColors.get("primaryButtonHover"), // hover color
 chart.chartContainer.get("background").events.on("click", function () {
     chart.goHome();
   });
+
+// Create line series
+var lineSeries = chart.series.push(
+  am5map.MapLineSeries.new(root, {})
+);
+  
+lineSeries.mapLines.template.setAll({
+  stroke: am5.color(0xffba00),
+  strokeWidth: 2,
+  strokeOpacity: 1
+});
+
+var route = lineSeries.pushDataItem({
+  geometry: {
+      type: "MultiLineString",
+      coordinates: [ // need to get data from database
+          [
+              [ -0.454296, 51.470020 ],
+              [ 116.4074, 39.9042 ]
+          ],
+          [
+              [ 116.4074, 39.9042 ],
+              [ 2.15899, 41.38879 ]
+          ],
+          [
+              [ 2.15899, 41.38879 ],
+              [ 116.4074, 39.9042 ]
+          ],
+          [
+              [75, 75],
+              [20, 20]
+          ],
+      ]
+  }
+});
+
+//console.log(route._settings.geometry.type);
+//console.log(route._settings.geometry.coordinates);
+//route._settings.geometry.coordinates.push([ [ 116.4074, 39.9042 ], [ -0.454296, 51.470020 ] ]); // push new data here
+//console.log(route._settings.geometry.coordinates);
+
+chart.events.on("click", function(ev) {
+  const apiKey = '8804044d31394579b1e84fe19be2521f'; // Replace with your OpenCage API key
+  const coordinates = [chart.invert(ev.point).longitude, chart.invert(ev.point).latitude];
+
+  const reverseGeocode = async (lat, lng, apiKey) => {
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.results && data.results.length > 0) {
+      const result = data.results[0];
+      const country = result.components.country;
+      return {
+        country: country || 'Unknown',
+      };
+    } else {
+      return {
+        country: 'Unknown',
+      };
+    }
+  };
+  reverseGeocode(coordinates[1], coordinates[0], apiKey)
+      .then(result => {
+        console.log('Country:', result.country);
+        if (result.country !== 'Unknown') {
+          // store coordinates array
+          currentCoordinates = coordinates;
+          console.log("currentCoordinates:", currentCoordinates);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+});
+
+
 
 // Add zoom control
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-pan-zoom/#Zoom_control
@@ -115,51 +222,6 @@ homeButton.events.on("click", function () {
     chart.goHome();
   });
 
-chart.events.on("click", function(ev) {
-    console.log(chart.invert(ev.point))
-  });
-
-// Create line series
-var lineSeries = chart.series.push(
-  am5map.MapLineSeries.new(root, {})
-);
-  
-lineSeries.mapLines.template.setAll({
-  stroke: am5.color(0xffba00),
-  strokeWidth: 2,
-  strokeOpacity: 1
-});
-
-var route = lineSeries.pushDataItem({
-    geometry: {
-        type: "MultiLineString",
-        coordinates: [ // need to get data from database
-            [
-                [ -0.454296, 51.470020 ],
-                [ 116.4074, 39.9042 ]
-            ],
-            [
-                [ 116.4074, 39.9042 ],
-                [ 2.15899, 41.38879 ]
-            ],
-            [
-                [ 2.15899, 41.38879 ],
-                [ 116.4074, 39.9042 ]
-            ],
-            [
-                [75, 75],
-                [20, 20]
-            ],
-        ]
-    }
-});
-
-console.log(route._settings.geometry.type);
-console.log(route._settings.geometry.coordinates);
-route._settings.geometry.coordinates.push([ [ 116.4074, 39.9042 ], [ -0.454296, 51.470020 ] ]); // push new data here
-console.log(route._settings.geometry.coordinates);
-
-console.log(lineSeries.data)
 // Create point series
 var pointSeries = chart.series.push(
   am5map.MapPointSeries.new(root, {})
