@@ -1,3 +1,8 @@
+let currentCoordinates = [0,0];
+let departureCountry, arrivalCountry, departureCoordinates, arrivalCoordinates;
+let isDepartureLocked = false;
+let isArrivalLocked = true;
+let currentUserId = document.getElementById("user-id").innerHTML;
 // Create root
 var root = am5.Root.new("chartdiv"); 
 
@@ -10,7 +15,7 @@ root.setThemes([
 var chart = root.container.children.push(
   am5map.MapChart.new(root, {
     panX: "rotateX",
-    panY: "none",
+    panY: "translateY",
     projection: am5map.geoNaturalEarth1()
   })
 );
@@ -20,7 +25,7 @@ var chart = root.container.children.push(
 var polygonSeries = chart.series.push(
   am5map.MapPolygonSeries.new(root, {
     geoJSON: am5geodata_worldLow,
-    exclude: ["AQ"]
+    exclude: ["AQ"] // exclude Antartica
   })
 );
 
@@ -44,17 +49,28 @@ lineSeries.mapLines.template.setAll({
 var route = lineSeries.pushDataItem({
   geometry: {
       type: "MultiLineString",
-      coordinates: [ // need to get data from database
-          [[-122.4194, 37.7749], [-122.4194, 37.7749]],
+      coordinates: [ 
+          // need to get data from database
       ]
+
   }
 });
 
+// create point for the route
+var places = {
+  "type": "FeatureCollection",
+  "features": []
+};
+
+
 // Create point series
 var pointSeries = chart.series.push(
-  am5map.MapPointSeries.new(root, {})
+  am5map.MapPointSeries.new(root, {
+    geoJSON: places
+  })
 );
 
+// create plane bullet
 pointSeries.bullets.push(function() {
   var container = am5.Container.new(root, {});
   container.children.push(am5.Graphics.new(root, {
@@ -67,14 +83,56 @@ pointSeries.bullets.push(function() {
   return am5.Bullet.new(root, { sprite: container });
 });
 
+//Create points for the route
+fetch(`/api/user/${currentUserId}`)
+  .then((response) => response.json())
+  .then((user) => {
+    console.log(user.visitedCountries)
+    user.visitedCountries.forEach((country) => {
+
+      // create route
+      route._settings.geometry.coordinates.push([ country.from.coordinates, country.to.coordinates ]); 
 
 
-let currentCoordinates = [0,0];
-let departureCountry, arrivalCountry, departureCoordinates, arrivalCoordinates;
-let isDepartureLocked = false;
-let isArrivalLocked = true;
+      // create points
+      // places.features.push({
+      //   "type": "Feature",
+      //   "properties": {
+      //     "name": country.from.name
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": country.from.coordinates
+      //   } 
+      // })
+      // places.features.push({
+      //   "type": "Feature",
+      //   "properties": {
+      //     "name": country.to.name
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": country.to.coordinates
+      //   }
+      // })
+      // pointSeries.geoJSON = places;
+  })}).catch((err) => console.log(err));
 
-let currentUserId = document.getElementById("user-id").innerHTML;
+
+var plane1 = pointSeries.pushDataItem({
+  lineDataItem: route,
+  positionOnLine: 0,
+  autoRotate: true
+});
+
+plane1.animate({
+    key: "positionOnLine",
+    to: 1,
+    duration: 5000,
+    loops: Infinity,
+    easing: am5.ease.inOut(am5.ease.linear)
+})
+
 polygonSeries.mapPolygons.template.events.once("click", function (ev) {
     const countryId = ev.target.dataItem.dataContext.name;
     console.log("Clicked on:", countryId);
@@ -146,25 +204,8 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         if (response.ok) {location.reload()}
       }).then((data) => console.log(data))
         .catch((error) => console.log(error));
-        
 
       route._settings.geometry.coordinates.push([ departureCoordinates, arrivalCoordinates ]); // push new data here
-      var plane1 = pointSeries.pushDataItem({
-        lineDataItem: route,
-        positionOnLine: 0,
-        autoRotate: true
-      });
-      
-      plane1.animate({
-          key: "positionOnLine",
-          to: 1,
-          duration: 5000,
-          loop: -1,
-          easing: am5.ease.inOut(am5.ease.cubic)
-      })
-
-
-      // To be updated for lineDataItem, need a function to calculate positionOnLine based on coordinates and journey routes
 
     }
 });
@@ -181,12 +222,7 @@ fill: root.interfaceColors.get("primaryButtonHover"), // hover color
 // Set clicking on "water" to zoom out
 chart.chartContainer.get("background").events.on("click", function () {
     chart.goHome();
-  });
-
-//console.log(route._settings.geometry.type);
-//console.log(route._settings.geometry.coordinates);
-//route._settings.geometry.coordinates.push([ [ 116.4074, 39.9042 ], [ -0.454296, 51.470020 ] ]); // push new data here
-//console.log(route._settings.geometry.coordinates);
+});
 
 chart.events.on("click", function(ev) {
   const apiKey = '8804044d31394579b1e84fe19be2521f'; // Replace with your OpenCage API key
@@ -223,8 +259,6 @@ chart.events.on("click", function(ev) {
       });
 });
 
-
-
 // Add zoom control
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-pan-zoom/#Zoom_control
 const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
@@ -240,14 +274,7 @@ const homeButton = zoomControl.children.moveValue(
   }),
   0
 );
+
 homeButton.events.on("click", function () {
     chart.goHome();
-  });
-
-
-
-
-
-
-
-  
+});

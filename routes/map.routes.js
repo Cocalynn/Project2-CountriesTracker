@@ -4,7 +4,6 @@ const Country = require("../models/Country.model");
 const User = require("../models/User.model");
 
 // Get all the users data
-
 router.get("/users", async (req, res) => {
   try {
     const users = await User.find({});
@@ -24,8 +23,24 @@ router.get("/users", async (req, res) => {
   }
 });
 
-// Get all the countries data
+// Get the current user
+router.get('/user/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const user = await User.findOne({ _id: userId }); 
 
+    if (!user) {
+      return res.status(404).send();
+    }
+
+    res.send(user);
+    
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
+// Get all the countries data
 router.get("/countries", async (req, res) => {
   try {
     const countries = await Country.find({});
@@ -46,7 +61,6 @@ router.get("/countries", async (req, res) => {
 });
 
 // Route to update the visitedTimes field
-
 router.put("/countries/:countryName/visited", async (req, res) => {
   const { countryName } = req.params;
   const { visitedTimes } = req.body;

@@ -22,7 +22,6 @@ router.get("/visited", isLoggedIn, (req, res) => {
         .catch((err)=>{
             console.log(err);
         })
-
 });
 
 // POST /visited

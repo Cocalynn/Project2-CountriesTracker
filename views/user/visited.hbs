@@ -17,11 +17,13 @@
     <div>
         <div>Journey list</div>
         {{#each currentUser.visitedCountries}}
-        <div>Departure: {{this.from.country}}</div>
-        <div>Arrival: {{this.to.country}}</div>
-        <form action="/visited/{{this._id}}/delete/{{this.to.country}}" method="post">
-            <button>Delete</button>
-        </form>
+        <div>
+            <div>Departure: {{this.from.country}}</div>
+            <div>Arrival: {{this.to.country}}</div>
+            <form action="/visited/{{this._id}}/delete/{{this.to.country}}" method="post">
+                <button>Delete</button>
+            </form>
+        </div>
         {{/each}}
     </div>
 </div>
