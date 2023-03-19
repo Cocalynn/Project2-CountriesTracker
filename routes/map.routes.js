@@ -32,6 +32,7 @@ router.get("/countries", async (req, res) => {
     const data = countries.map((country) => {
       return {
         id: country._id.toString(),
+        cid: country.cid,
         name: country.name,
         visitedTimes: country.visitedTimes,
         plannedTimes: country.plannedTimes,
