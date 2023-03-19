@@ -225,7 +225,7 @@ chart.chartContainer.get("background").events.on("click", function () {
 });
 
 chart.events.on("click", function(ev) {
-  const apiKey = '8804044d31394579b1e84fe19be2521f'; // Replace with your OpenCage API key
+  const apiKey = process.env.API_KEY; // Replace with your OpenCage API key
   const coordinates = [chart.invert(ev.point).longitude, chart.invert(ev.point).latitude];
 
   const reverseGeocode = async (lat, lng, apiKey) => {
