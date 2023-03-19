@@ -2,6 +2,8 @@
 <br />
 <img src="" alt="A world map records all countries you have been" />
 <p>Some introductions</p>
+<p>Hello {{currentUser.username}}!</p>
+<p id="user-id">{{currentUser._id}}</p>
 <div id="map-container">
     <div id="chartdiv"></div>
     <div id="map-visiter-pointer">
@@ -12,17 +14,20 @@
         <br>
         <button id="journey-confirm">Record this Journey</button>
     </div>
-</div>
-<button>Download</button>
-<button>Share on social media</button>
+    <div>
+        <div>Journey list</div>
+        {{#each currentUser.visitedCountries}}
+        <div>Departure: {{this.from.country}}</div>
+        <div>Arrival: {{this.to.country}}</div>
+        <form action="/visited/{{this._id}}/delete/{{this.to.country}}" method="post">
+            <button>Delete</button>
+        </form>
+        {{/each}}
+    </div>
 
-{{!-- <script src="/js/script.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/map.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
-<script src="//cdn.amcharts.com/lib/5/plugins/exporting.js"></script>
-<script src="/js/map.js"></script> --}}
+
+</div>
+
 
 
 <script src="//cdn.amcharts.com/lib/5/index.js"></script>

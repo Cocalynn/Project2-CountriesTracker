@@ -63,10 +63,41 @@ router.put("/countries/:countryName/visited", async (req, res) => {
       return res.status(404).send();
     }
 
-    res.send(country);
+    res.redirect("/visited");
+
   } catch (error) {
     res.status(500).send(error);
   }
+});
+
+router.put("/visited/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const visitedCountries = req.body;
+
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId}, // yes
+      { $push: { visitedCountries: visitedCountries } },
+      { new: true }
+    )
+
+    //update countries collection: visitedTimes +1
+    await Country.findOneAndUpdate(
+      { name: visitedCountries.to.country },
+      { $inc: { visitedTimes: 1 } },
+      { new: true }
+    )
+
+    if (!updatedUser) {
+      return res.status(404).send();
+    }
+
+    res.send(updatedUser);
+
+  } catch (err) {
+    res.status(500).send(err);
+  }
+
 });
 
 module.exports = router;

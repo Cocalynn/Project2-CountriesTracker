@@ -244,7 +244,29 @@ const users = [
         email: "testUser@ironhack.com",
         passwordHash: bcrypt.hashSync("User123!", bcrypt.genSaltSync(bcryptSalt)),
         visitedCountries: [
-            {from:"United States", to:"Mexico"},
+            {
+                from:{
+                    country: "China",
+                    coordinates: [116.4074, 39.9042] 
+                    // Beijing, 
+                    // Coordinates may differ from users who visited China
+                    // This will depend on where they click on the map  
+                },
+                to:{
+                    country: "United States",
+                    coordinates: [-95.7129, 37.0902]
+                }
+            },
+            {
+                from:{
+                    country: "United States",
+                    coordinates: [-95.7129, 37.0902]
+                },
+                to:{
+                    country: "Mexico",
+                    coordinates: [-99.1332, 19.4326]
+                }
+            }
         ],
         plannedCountries: [
             "France","Germany","Japan","Mexico","Spain"
@@ -253,8 +275,7 @@ const users = [
 ]
 
 
-//const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/countries-tracker'
-const MONGO_URL = 'mongodb://localhost:27017/countries-tracker'
+const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/countries-tracker'
 
 console.log(MONGO_URL)
 mongoose

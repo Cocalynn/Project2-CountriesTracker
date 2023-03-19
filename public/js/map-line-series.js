@@ -31,15 +31,50 @@ polygonSeries.mapPolygons.template.setAll({
     interactive: true,
 });
 
-//only for testing purpose
-let visitedCountries = [
+var lineSeries = chart.series.push(
+  am5map.MapLineSeries.new(root, {})
+);
+  
+lineSeries.mapLines.template.setAll({
+  stroke: am5.color(0xffba00),
+  strokeWidth: 2,
+  strokeOpacity: 1
+});
 
-];
+var route = lineSeries.pushDataItem({
+  geometry: {
+      type: "MultiLineString",
+      coordinates: [ // need to get data from database
+          [[-122.4194, 37.7749], [-122.4194, 37.7749]],
+      ]
+  }
+});
+
+// Create point series
+var pointSeries = chart.series.push(
+  am5map.MapPointSeries.new(root, {})
+);
+
+pointSeries.bullets.push(function() {
+  var container = am5.Container.new(root, {});
+  container.children.push(am5.Graphics.new(root, {
+    svgPath: "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47",
+    scale: 0.06,
+    centerY: am5.p50,
+    centerX: am5.p50,
+    fill: am5.color(0x000000)
+  }));
+  return am5.Bullet.new(root, { sprite: container });
+});
+
+
 
 let currentCoordinates = [0,0];
 let departureCountry, arrivalCountry, departureCoordinates, arrivalCoordinates;
 let isDepartureLocked = false;
 let isArrivalLocked = true;
+
+let currentUserId = document.getElementById("user-id").innerHTML;
 polygonSeries.mapPolygons.template.events.once("click", function (ev) {
     const countryId = ev.target.dataItem.dataContext.name;
     console.log("Clicked on:", countryId);
@@ -74,10 +109,6 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         arrivalConfirmButton.innerHTML = "Confirm";
         // enable the arrival input
         isArrivalLocked = false;
-
-        // set the current coordinates as the departure coordinates
-        // data is stored in currentCoordinates
-        // needs to be sent to the database
         departureCountry = countryId;
         departureCoordinates = currentCoordinates;
     }
@@ -91,25 +122,51 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         arrivalConfirmButton.innerHTML = "Confirmed";
         arrivalCountry = countryId;
         arrivalCoordinates = currentCoordinates;
-    }    
-    journeyConfirmButton.onclick = function() {
-        // send the data to the database
-        visitedCountries.push(
-          {
-            from: {
-              country: departureCountry,
-              coordinates: departureCoordinates
-            },
-            to: {
-              country: arrivalCountry,
-              coordinates: arrivalCoordinates
-            }
-          }
-        );
-      route._settings.geometry.coordinates.push([ departureCoordinates, arrivalCoordinates ]); // push new data here
-      console.log(visitedCountries);
+        isJourneyLocked = false;
     }
+    journeyConfirmButton.onclick = function() {
+      isJourneyLocked = true;
+      let userId = currentUserId;
+      fetch(`/api/visited/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from:{
+            country: departureCountry,
+            coordinates: departureCoordinates
+          },
+          to:{
+            country: arrivalCountry,
+            coordinates: arrivalCoordinates
+          }
+        })
+      }).then((response) => {
+        if (response.ok) {location.reload()}
+      }).then((data) => console.log(data))
+        .catch((error) => console.log(error));
+        
 
+      route._settings.geometry.coordinates.push([ departureCoordinates, arrivalCoordinates ]); // push new data here
+      var plane1 = pointSeries.pushDataItem({
+        lineDataItem: route,
+        positionOnLine: 0,
+        autoRotate: true
+      });
+      
+      plane1.animate({
+          key: "positionOnLine",
+          to: 1,
+          duration: 5000,
+          loop: -1,
+          easing: am5.ease.inOut(am5.ease.cubic)
+      })
+
+
+      // To be updated for lineDataItem, need a function to calculate positionOnLine based on coordinates and journey routes
+
+    }
 });
 
 
@@ -125,41 +182,6 @@ fill: root.interfaceColors.get("primaryButtonHover"), // hover color
 chart.chartContainer.get("background").events.on("click", function () {
     chart.goHome();
   });
-
-// Create line series
-var lineSeries = chart.series.push(
-  am5map.MapLineSeries.new(root, {})
-);
-  
-lineSeries.mapLines.template.setAll({
-  stroke: am5.color(0xffba00),
-  strokeWidth: 2,
-  strokeOpacity: 1
-});
-
-var route = lineSeries.pushDataItem({
-  geometry: {
-      type: "MultiLineString",
-      coordinates: [ // need to get data from database
-          [
-              [ -0.454296, 51.470020 ],
-              [ 116.4074, 39.9042 ]
-          ],
-          [
-              [ 116.4074, 39.9042 ],
-              [ 2.15899, 41.38879 ]
-          ],
-          [
-              [ 2.15899, 41.38879 ],
-              [ 116.4074, 39.9042 ]
-          ],
-          [
-              [75, 75],
-              [20, 20]
-          ],
-      ]
-  }
-});
 
 //console.log(route._settings.geometry.type);
 //console.log(route._settings.geometry.coordinates);
@@ -222,36 +244,10 @@ homeButton.events.on("click", function () {
     chart.goHome();
   });
 
-// Create point series
-var pointSeries = chart.series.push(
-  am5map.MapPointSeries.new(root, {})
-);
 
-pointSeries.bullets.push(function() {
-  var container = am5.Container.new(root, {});
-  container.children.push(am5.Graphics.new(root, {
-    svgPath: "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47",
-    scale: 0.06,
-    centerY: am5.p50,
-    centerX: am5.p50,
-    fill: am5.color(0x000000)
-  }));
-  return am5.Bullet.new(root, { sprite: container });
-});
 
-// To be updated for lineDataItem, need a function to calculate positionOnLine based on coordinates and journey routes
-var plane1 = pointSeries.pushDataItem({
-  lineDataItem: route,
-  positionOnLine: 0,
-  autoRotate: true
-});
-plane1.animate({
-    key: "positionOnLine",
-    to: 1,
-    duration: 5000,
-    loop: -1,
-    easing: am5.ease.inOut(am5.ease.cubic)
-})
+
+
 
 
   

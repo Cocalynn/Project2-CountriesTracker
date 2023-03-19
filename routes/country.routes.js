@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
 const mongoose = require("mongoose");
-
-// Require the User model in order to interact with the database
 const User = require("../models/User.model");
+const Country = require("../models/Country.model");
 
 // Require necessary middleware in order to control access to specific routes
 const isLoggedOut = require("../middleware/isLoggedOut");
@@ -13,17 +11,46 @@ const isAdmin = require("../middleware/isAdmin");
 
 // GET /visited
 router.get("/visited", isLoggedIn, (req, res) => {
-    if (req.session.currentUser.role === "admin") {
-        res.render("user/visited", { user: req.session.currentUser, layout:"layout/admin-layout" });
-    } else if (req.session.currentUser.role === "user") {
-        res.render("user/visited", { user: req.session.currentUser, layout:"layout/user-layout" });
-    }
+    User.findById(req.session.currentUser._id)
+        .then((currentUser)=>{
+            if (req.session.currentUser.role === "admin") {
+                res.render("user/visited", { user: req.session.currentUser, layout:"layout/admin-layout" , currentUser: currentUser});
+            } else if (req.session.currentUser.role === "user") {
+                res.render("user/visited", { user: req.session.currentUser, layout:"layout/user-layout" , currentUser: currentUser});
+            }
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+
 });
 
 // POST /visited
-/* 
-    ...
-*/
+router.post("/visited/:journeyId/delete/:arrivalCountry", isLoggedIn, async (req, res) => {
+    const { journeyId, arrivalCountry } = req.params;
+
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: req.session.currentUser._id },
+            { $pull: { visitedCountries: {_id: journeyId} } },
+            { new: true}
+        )
+
+        await Country.findOneAndUpdate(
+            { name: arrivalCountry },
+            { $inc: { visitedTimes: -1 } },
+            { new: true}
+        )
+        if (!updatedUser) {
+            return res.status(404).send();
+        }
+      
+        res.redirect("/visited");
+
+    } catch(err) {
+        res.status(500).send(err);
+    }
+})
 
 // GET /wishlist
 router.get("/wishlist", isLoggedIn, (req, res) => {
