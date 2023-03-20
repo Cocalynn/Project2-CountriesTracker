@@ -3,10 +3,10 @@ const { Schema, model } = require("mongoose");
 const countrySchema = new Schema(
     {
         cid: {
-            type: String,
-            required: true,
-            unique: true,
-            trim: true,
+          type: String,
+          required: true,
+          unique: true,
+          trim: true,
         },
         name: {
             type: String,

@@ -212,6 +212,7 @@ const userSchema = new Schema(
         "Zimbabwean",
       ],
     },
+
     visitedCountries: [
       {
         from: {
