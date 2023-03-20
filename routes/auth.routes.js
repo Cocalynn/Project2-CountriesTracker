@@ -240,17 +240,6 @@ router.post("/signup", isLoggedOut, (req, res) => {
     return;
   }
 
-  /*
-  if (password.length < 6) {
-    res.status(400).render("auth/signup", {
-      nationalities: nationalities,
-      errorMessage: "Your password needs to be at least 6 characters long.",
-    });
-
-    return;
-  }
-  */
-
   //   ! This regular expression checks password for special characters and minimum length
   const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!regex.test(password)) {
@@ -359,6 +348,7 @@ router.post("/logout", isLoggedIn, (req, res) => {
 
 
 router.get("/userProfile", isLoggedIn, (req, res) => {
+
   if (req.session.currentUser.role === "user") {
     res.render("user/user-profile", { userInSession: req.session.currentUser, layout: "layout/user-layout" });
   }

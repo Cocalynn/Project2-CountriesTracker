@@ -52,7 +52,6 @@ var route = lineSeries.pushDataItem({
       coordinates: [ 
           // need to get data from database
       ]
-
   }
 });
 
@@ -89,10 +88,8 @@ fetch(`/api/user/${currentUserId}`)
   .then((user) => {
     console.log(user.visitedCountries)
     user.visitedCountries.forEach((country) => {
-
       // create route
       route._settings.geometry.coordinates.push([ country.from.coordinates, country.to.coordinates ]); 
-
 
       // create points
       // places.features.push({
@@ -204,9 +201,7 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         if (response.ok) {location.reload()}
       }).then((data) => console.log(data))
         .catch((error) => console.log(error));
-
-      route._settings.geometry.coordinates.push([ departureCoordinates, arrivalCoordinates ]); // push new data here
-
+      route._settings.geometry.coordinates.push([ departureCoordinates, arrivalCoordinates ]); // push new data into lines
     }
 });
 
@@ -225,7 +220,7 @@ chart.chartContainer.get("background").events.on("click", function () {
 });
 
 chart.events.on("click", function(ev) {
-  const apiKey = process.env.API_KEY; // Replace with your OpenCage API key
+  const apiKey = '8804044d31394579b1e84fe19be2521f'; // Replace with your OpenCage API key
   const coordinates = [chart.invert(ev.point).longitude, chart.invert(ev.point).latitude];
 
   const reverseGeocode = async (lat, lng, apiKey) => {
@@ -260,7 +255,6 @@ chart.events.on("click", function(ev) {
 });
 
 // Add zoom control
-// https://www.amcharts.com/docs/v5/charts/map-chart/map-pan-zoom/#Zoom_control
 const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
 const homeButton = zoomControl.children.moveValue(
   am5.Button.new(root, {
@@ -275,6 +269,18 @@ const homeButton = zoomControl.children.moveValue(
   0
 );
 
+// Set clicking on "water" to zoom out
 homeButton.events.on("click", function () {
     chart.goHome();
 });
+
+/**
+ * Exporting map
+ */
+const exporting = am5plugins_exporting.Exporting.new(root, {
+  menu: am5plugins_exporting.ExportingMenu.new(root, {}),
+  filePrefix: "myVisitedMap",
+});
+
+// Make stuff animate on load
+chart.appear(1000, 100);
