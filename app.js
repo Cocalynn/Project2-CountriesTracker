@@ -34,6 +34,9 @@ app.use("/", countryRoutes);
 const aboutRoutes = require("./routes/about.routes");
 app.use("/", aboutRoutes);
 
+const mapRoutes = require("./routes/map.routes");
+app.use("/api", mapRoutes);
+
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);

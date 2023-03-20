@@ -9,6 +9,9 @@ const MongoStore = require("connect-mongo");
 // ADDED: require mongoose
 const mongoose = require("mongoose");
 
+require("dotenv").config();
+
+
 // since we are going to USE this middleware in the app.js,
 // let's export it and have it receive a parameter
 module.exports = (app) => {

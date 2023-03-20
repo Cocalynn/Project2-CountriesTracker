@@ -1,6 +1,38 @@
 <div>Visited</div>
-<br>
-<img src="" alt="A world map records all countries you have been">
+<br />
+<img src="" alt="A world map records all countries you have been" />
 <p>Some introductions</p>
-<button>Download</button>
-<button>Share on social media</button>
+<p>Hello {{currentUser.username}}!</p>
+<p id="user-id">{{currentUser._id}}</p>
+<div id="map-container">
+    <div id="chartdiv"></div>
+    <div id="map-visiter-pointer">
+        <div>Country of departure: <span id="country-departure"></span></div>
+        <button id="country-departure-confirm">Confirm</button>
+        <div>Country of arrival: <span id="country-arrival"></span></div>
+        <button id="country-arrival-confirm">Confirm</button>
+        <br>
+        <button id="journey-confirm">Record this Journey</button>
+    </div>
+    <div>
+        <div>Journey list</div>
+        {{#each currentUser.visitedCountries}}
+        <div>
+            <div>Departure: {{this.from.country}}</div>
+            <div>Arrival: {{this.to.country}}</div>
+            <form action="/visited/{{this._id}}/delete/{{this.to.country}}" method="post">
+                <button>Delete</button>
+            </form>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+<script src="//cdn.amcharts.com/lib/5/index.js"></script>
+<script src="//cdn.amcharts.com/lib/5/map.js"></script>
+<script src="//cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+<script src="//cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script src="/js/map-line-series.js"></script>
+
+
+

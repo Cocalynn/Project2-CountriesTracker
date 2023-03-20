@@ -10,3 +10,18 @@ a {
 h1 {
   color: 15px;
 }
+
+#mapDiv {
+  width: 500px;
+  height: 350px
+}
+#chartdiv {
+  width: 1000px;
+  height: 500px
+}
+
+#map-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
