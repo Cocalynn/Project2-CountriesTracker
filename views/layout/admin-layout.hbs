@@ -1,34 +1,60 @@
+<!doctype html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{appTitle}}</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
 
-  <body>
-    <nav> 
-      <div>
-        <img src="" alt="logo">
-      </div>
-      <ul>
-        <li><a href="/visited">Visited</a></li>
-        <li><a href="/wishlist">Wishlist</a></li>
-        <li><a href="/aboutus">About Us</a></li>
-        <li><a href="/userprofile">User Profile</a></li>
-        <li><a href="/statistics/visited">Statistics</a></li>
-      </ul>
-      <form action="/logout" method="post">
-        <button>Logout</button>
-      </form>
-    </nav>
-    <hr>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="" alt="Countries Tracker" width="auto" height="30">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/visited">Visited</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/wishlist">Wishlist</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/aboutus">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/userprofile">User Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/statistics/visited">Statistics</a>
+                        </li>
+                    </ul>
+                    <form action="/logout" method="post" class="ml-4">
+                        <button type="submit" class="btn btn-outline-secondary">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    {{{body}}}
+    <main>
+        {{{body}}}
+    </main>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="/js/script.js"></script>
-  </body>
+</body>
 
 </html>

@@ -1,30 +1,41 @@
-<div>Visited</div>
-<br />
-<img src="" alt="A world map records all countries you have been" />
-<p>Some introductions</p>
-<p>Hello {{currentUser.username}}!</p>
-<p id="user-id">{{currentUser._id}}</p>
-<div id="map-container">
-    <div id="chartdiv"></div>
-    <div id="map-visiter-pointer">
-        <div>Country of departure: <span id="country-departure"></span></div>
-        <button id="country-departure-confirm">Confirm</button>
-        <div>Country of arrival: <span id="country-arrival"></span></div>
-        <button id="country-arrival-confirm">Confirm</button>
-        <br>
-        <button id="journey-confirm">Record this Journey</button>
-    </div>
-    <div>
-        <div>Journey list</div>
-        {{#each currentUser.visitedCountries}}
-        <div>
-            <div>Departure: {{this.from.country}}</div>
-            <div>Arrival: {{this.to.country}}</div>
-            <form action="/visited/{{this._id}}/delete/{{this.to.country}}" method="post">
-                <button>Delete</button>
-            </form>
+ <div class="container mt-5">
+    <p>Hello {{currentUser.username}}! Your ID is <span id="user-id">{{currentUser._id}}</span></p>
+    <p>Document your travels here!</p>
+    <div class="row">
+        <div class="col-lg-8 mb-5">
+            <div id="chartdiv" style="width: 100%; height: 500px;"></div>
         </div>
-        {{/each}}
+        <div class="col-lg-4">
+            <div id="map-visited-pointer">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div>Country of departure: <span id="country-departure"></span></div>
+                        <button id="country-departure-confirm" class="btn btn-primary mt-2">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <div>Country of arrival: <span id="country-arrival"></span></div>
+                        <button id="country-arrival-confirm" class="btn btn-primary mt-2">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button id="journey-confirm" class="btn btn-success mt-3">Document this Travel</button>
+                    </div>
+                </div>
+            </div>
+            <div id="travel-records" style="height: 500px; overflow-y: scroll;">
+                <h4>Travel Records</h4>
+                {{#each currentUser.visitedCountries}}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div>Departure: {{this.from.country}}</div>
+                        <div>Arrival: {{this.to.country}}</div>
+                        <form action="/visited/{{this._id}}/delete/{{this.to.country}}" method="post" class="mt-2">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -35,6 +46,5 @@
 <script src="//cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 <script src="//cdn.amcharts.com/lib/5/plugins/exporting.js"></script>
 <script src="/js/map-line-series.js"></script>
-
 
 

@@ -60,9 +60,6 @@ fetch('http://localhost:3000/api/countries')
 })
 
 chart.seriesContainer.children.push(am5.Label.new(root, {
-x: 20,
-y: 20,
-text: "Countries visited statistics",
 background: am5.RoundedRectangle.new(root, {
     fill: am5.color(0xffffff),
     fillOpacity: 0.2
