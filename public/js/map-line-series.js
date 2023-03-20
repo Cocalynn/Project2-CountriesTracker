@@ -127,7 +127,7 @@ plane1.animate({
     to: 1,
     duration: 5000,
     loops: Infinity,
-    easing: am5.ease.inOut(am5.ease.linear)
+    easing: am5.ease.inOut(am5.ease.cubic)
 })
 
 polygonSeries.mapPolygons.template.events.once("click", function (ev) {
@@ -277,10 +277,10 @@ homeButton.events.on("click", function () {
 /**
  * Exporting map
  */
-const exporting = am5plugins_exporting.Exporting.new(root, {
-  menu: am5plugins_exporting.ExportingMenu.new(root, {}),
-  filePrefix: "myVisitedMap",
-});
+// const exporting = am5plugins_exporting.Exporting.new(root, {
+//   menu: am5plugins_exporting.ExportingMenu.new(root, {}),
+//   filePrefix: "myVisitedMap",
+// });
 
 // Make stuff animate on load
 chart.appear(1000, 100);
