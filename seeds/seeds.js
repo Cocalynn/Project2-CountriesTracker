@@ -159,6 +159,7 @@ const countries =
         { cid: "OM", name: "Oman", visitedTimes: 0, plannedTimes: 0 },
         { cid: "PK", name: "Pakistan", visitedTimes: 0, plannedTimes: 0 },
         { cid: "PW", name: "Palau", visitedTimes: 0, plannedTimes: 0 },
+        { cid: "PS", name: "Palestine, State of", visitedTimes: 0, plannedTimes: 0 },
         { cid: "PA", name: "Panama", visitedTimes: 0, plannedTimes: 0 },
         { cid: "PG", name: "Papua New Guinea", visitedTimes: 0, plannedTimes: 0 },
         { cid: "PY", name: "Paraguay", visitedTimes: 0, plannedTimes: 0 },
