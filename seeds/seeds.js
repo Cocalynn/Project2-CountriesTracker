@@ -279,7 +279,7 @@ const users = [
                 }
             }
         ],
-        plannedCountries: ["Australia","Canada","France","Germany","Italy","Japan","Mexico"]
+        plannedCountries: [ "AF", "US", "UK" ]
         
     },
     {
@@ -312,9 +312,7 @@ const users = [
                 }
             }
         ],
-        plannedCountries: [
-            "France","Germany","Japan","Mexico","Spain"
-        ]
+        plannedCountries: [ "CM", "CA", "CF" ]
     }
 ]
 
