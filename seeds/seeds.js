@@ -38,12 +38,12 @@ const countries =
         { cid: "BI", name: "Burundi", visitedTimes: 0, plannedTimes: 0 },
         { cid: "KH", name: "Cambodia", visitedTimes: 0, plannedTimes: 0 },
         { cid: "CM", name: "Cameroon", visitedTimes: 0, plannedTimes: 0 },
-        { cid: "CA", name: "Canada", visitedTimes: 0, plannedTimes: 0 },
+        { cid: "CA", name: "Canada", visitedTimes: 0, plannedTimes: 1 },
         { cid: "CV", name: "Cape Verde", visitedTimes: 0, plannedTimes: 0 },
         { cid: "CF", name: "Central African Republic", visitedTimes: 0, plannedTimes: 0 },
         { cid: "TD", name: "Chad", visitedTimes: 0, plannedTimes: 0 },
         { cid: "CL", name: "Chile", visitedTimes: 0, plannedTimes: 0 },
-        { cid: "CN", name: "China", visitedTimes: 0, plannedTimes: 0 },
+        { cid: "CN", name: "China", visitedTimes: 0, plannedTimes: 2 },
         { cid: "CO", name: "Colombia", visitedTimes: 0, plannedTimes: 0 },
         { cid: "KM", name: "Comoros", visitedTimes: 0, plannedTimes: 0 },
         { cid: "CG", name: "Congo (Brazzaville)", visitedTimes: 0, plannedTimes: 0 },
@@ -123,7 +123,7 @@ const countries =
         { cid: "MH", name: "Marshall Islands", visitedTimes: 0, plannedTimes: 0 },
         { cid: "MR", name: "Mauritania", visitedTimes: 0, plannedTimes: 0 },
         { cid: "MU", name: "Mauritius", visitedTimes: 0, plannedTimes: 0 },
-        { cid: "MX", name: "Mexico", visitedTimes: 0, plannedTimes: 0 },
+        { cid: "MX", name: "Mexico", visitedTimes: 2, plannedTimes: 0 },
         { cid: "FM", name: "Micronesia", visitedTimes: 0, plannedTimes: 0 },
         { cid: "MD", name: "Moldova", visitedTimes: 0, plannedTimes: 0 },
         { cid: "MC", name: "Monaco", visitedTimes: 0, plannedTimes: 0 },
@@ -198,8 +198,8 @@ const countries =
         { cid: "UG", name: "Uganda", visitedTimes: 0, plannedTimes: 0 },
         { cid: "UA", name: "Ukraine", visitedTimes: 0, plannedTimes: 0 },
         { cid: "AE", name: "United Arab Emirates", visitedTimes: 0, plannedTimes: 0 },
-        { cid: "GB", name: "United Kingdom", visitedTimes: 0, plannedTimes: 0 },
-        { cid: "US", name: "United States", visitedTimes: 0, plannedTimes: 0 },
+        { cid: "GB", name: "United Kingdom", visitedTimes: 0, plannedTimes: 1 },
+        { cid: "US", name: "United States", visitedTimes: 2, plannedTimes: 2 },
         { cid: "UY", name: "Uruguay", visitedTimes: 0, plannedTimes: 0 },
         { cid: "UZ", name: "Uzbekistan", visitedTimes: 0, plannedTimes: 0 },
         { cid: "VU", name: "Vanuatu", visitedTimes: 0, plannedTimes: 0 },
@@ -244,7 +244,7 @@ const users = [
                 }
             }
         ],
-        plannedCountries: [ "AF", "US", "UK" ]
+        plannedCountries: [ "CN", "US", "GB" ]
         
     },
     {
@@ -277,7 +277,7 @@ const users = [
                 }
             }
         ],
-        plannedCountries: [ "CM", "CA", "CF" ]
+        plannedCountries: [ "CN", "US", "CA" ]
     }
 ]
 
