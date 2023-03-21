@@ -1,3 +1,4 @@
+let isNextLocked = false;
 // Create root element
 // https://www.amcharts.com/docs/v5/getting-started/#Root_element
 const root = am5.Root.new("mapDiv");
@@ -48,31 +49,42 @@ chart.chartContainer.get("background").events.on("click", function () {
 
 polygonSeries.mapPolygons.template.events.once("click", function (ev) {
   const countryId = ev.target.dataItem.dataContext.name;
-  const isActive = ev.target.dataItem.dataContext.isActive;
-  console.log(isActive);
   console.log("Clicked on:", countryId);
 
-  // If country is active, don't update visitedTimes
-  if (isActive) {
-    return;
+  let nextCountryButton = document.getElementById("country-next-confirm");
+  let nextConfirmButton = document.getElementById("next-confirm-ok");
+
+  if (!isNextLocked) {
+    let departure = document.getElementById("country-next");
+    departure.innerHTML = countryId;
   }
 
-  // Otherwise, update visitedTimes and set isActive to true
-  ev.target.dataItem.dataContext.isActive = true;
-  fetch(`/api/countries/${countryId}/visited`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      visitedTimes: 1, // Increase visitedTimes by 1
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => console.log(data))
-    .catch((error) => console.error(error));
-});
+  nextCountryButton.onclick = function () {
+    isNextLocked = true;
+    // lock the value of departure.innerHTML
+    nextCountryButton.disabled = true;
+    nextCountryButton.style.backgroundColor = "grey";
+    nextCountryButton.style.color = "white";
+    nextCountryButton.style.cursor = "not-allowed";
+    nextCountryButton.innerHTML = "Confirmed";
+    isJourneyLocked = false;
+  };
 
+  nextConfirmButton.onclick = function () {
+    isJourneyLocked = true;
+    fetch(`/api/countries/${countryId}/plan`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        plannedTimes: 1, // Increase plannedTimes by 1
+      }),
+    })
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  };
+});
 // Add zoom control
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-pan-zoom/#Zoom_control
 const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
@@ -94,7 +106,7 @@ const homeButton = zoomControl.children.moveValue(
  */
 const exporting = am5plugins_exporting.Exporting.new(root, {
   menu: am5plugins_exporting.ExportingMenu.new(root, {}),
-  filePrefix: "myVisitedMap",
+  filePrefix: "myPlannedMap",
 });
 
 homeButton.events.on("click", function () {
