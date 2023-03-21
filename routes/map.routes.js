@@ -94,24 +94,32 @@ router.get("/countries", async (req, res) => {
 
 // Route to update the plannedTimes field
 router.put("/countries/:countryName/plan", async (req, res) => {
-  const { countryName } = req.params;
-  const { visitedTimes } = req.body;
+  const { countryId } = req.params;
+  console.log(req.params);
+  const { plannedTimes } = req.body;
   const user = req.session.currentUser.username;
   console.log({ user: user });
 
   try {
-    const country = await Country.findOneAndUpdate(
-      { name: countryName },
-      { $inc: { visitedTimes: visitedTimes } },
+    const updatedUser = await User.findOneAndUpdate(
+      { username: user },
+      { $addToSet: { plannedCountries: countryId } },
       { new: true }
     );
 
-    if (!country) {
+    const updatedCountry = await Country.findOneAndUpdate(
+      { cid: countryId },
+      { $inc: { plannedTimes: plannedTimes } },
+      { new: true }
+    );
+
+    if (!updatedCountry) {
       return res.status(404).send();
     }
 
-    res.redirect("/visited");
+    res.send(updatedCountry);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 });
