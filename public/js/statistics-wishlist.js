@@ -44,7 +44,7 @@ polygonSeries.mapPolygons.template.events.on("pointerover", function(ev) {
 });
 
 
-fetch('http://localhost:3000/api/countries')
+fetch('http://localhost:3000/api/countries', {mode: 'no-cors'})
 .then((res) => res.json())
 .then((countryData) => {
     var data = []
