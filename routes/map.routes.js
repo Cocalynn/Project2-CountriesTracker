@@ -93,7 +93,7 @@ router.get("/countries", async (req, res) => {
 });
 
 // Route to update the plannedTimes field
-router.put("/countries/:countryName/plan", async (req, res) => {
+router.put("/countries/:countryId/plan", async (req, res) => {
   const { countryId } = req.params;
   console.log(req.params);
   const { plannedTimes } = req.body;
