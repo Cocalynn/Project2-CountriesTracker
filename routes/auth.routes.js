@@ -235,8 +235,8 @@ router.post("/signup", isLoggedOut, (req, res) => {
       nationalities: nationalities,
       errorMessage:
         "All fields are mandatory. Please provide your username, nationality, email and password.",
+      layout: "layout/guest-layout"
     });
-
     return;
   }
 
@@ -272,6 +272,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
           nationalities: nationalities,
           errorMessage:
             "Username and email need to be unique. Provide a valid username or email.",
+          layout: "layout/guest-layout"
         });
       } else {
         next(error);
@@ -294,6 +295,7 @@ router.post("/login", isLoggedOut, (req, res, next) => {
     res.status(400).render("auth/login", {
       errorMessage:
         "All fields are mandatory. Please provide username, email and password.",
+      layout: "layout/guest-layout"
     });
 
     return;
@@ -317,29 +319,18 @@ router.post("/login", isLoggedOut, (req, res, next) => {
         // and send the error message to the user
         res.render("auth/login", {
           errorMessage: "Incorrect password.",
-          layout: 'guest-layout.hbs'
+          layout: "layout/guest-layout"
         });
       }
     })
     .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
 
-// GET /logout
-// router.get("/logout", isLoggedIn, (req, res) => {
-//   req.session.destroy((err) => {
-//     if (err) {
-//       res.status(500).render("auth/logout", { errorMessage: err.message });
-//       return;
-//     }
-//     res.redirect("/");
-//   });
-// });
-
 // POST /logout
 router.post("/logout", isLoggedIn, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      res.status(500).render("auth/logout", { errorMessage: err.message });
+      res.status(500).render("auth/logout", { errorMessage: err.message, layout: "layout/guest-layout" });
       return;
     }
     res.redirect("/");
