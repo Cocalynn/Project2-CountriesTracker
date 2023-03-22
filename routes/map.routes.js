@@ -8,6 +8,37 @@ const isLoggedOut = require("../middleware/isLoggedOut");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const isAdmin = require("../middleware/isAdmin");
 
+// Get the countries saved by the user
+
+router.get("/countries/saved", isLoggedIn, async (req, res) => {
+  // Make sure a user is logged in
+  if (!req.session.currentUser) {
+    return res.status(401).json({ error: "User not authenticated" });
+  }
+
+  const username = req.session.currentUser.username;
+
+  try {
+    // Query the User model using the username and populate the plannedCountries field
+    const user = await User.findOne({ username: username }).populate(
+      "plannedCountries.country"
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Return an array of country codes
+    const countryCodes = user.plannedCountries.map(
+      (plannedCountry) => plannedCountry.country.cid
+    );
+    res.status(200).json(countryCodes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch saved countries" });
+  }
+});
+
 // Get all the users data
 router.get("/users", async (req, res) => {
   try {

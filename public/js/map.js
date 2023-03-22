@@ -45,6 +45,13 @@ chart.chartContainer.get("background").events.on("click", function () {
   chart.goHome();
 });
 
+// Get countries inside the DB for the user
+async function getSavedCountries() {
+  const response = await fetch("/api/countries/saved");
+  const savedCountries = await response.json();
+  return savedCountries;
+}
+
 // fetch the object id property from the db
 async function getCountryObjectId(countryId) {
   const response = await fetch(`/api/countries/cid/${countryId}`);
