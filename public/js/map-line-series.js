@@ -158,8 +158,6 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         departureConfirmButton.innerHTML = "Confirmed";
         // enable the arrival confirm button
         arrivalConfirmButton.disabled = false;
-        arrivalConfirmButton.style.backgroundColor = "white";
-        arrivalConfirmButton.style.color = "black";
         arrivalConfirmButton.style.cursor = "pointer";
         arrivalConfirmButton.innerHTML = "Confirm";
         // enable the arrival input

@@ -79,7 +79,8 @@ h1 {
   font-size: 1.1rem;
   color: #6c757d;
 }
-#chartdiv {
+#chartdiv,
+#mapDiv {
   width: 100%;
   height: 400px;
   background-color: #f8f9fa;
