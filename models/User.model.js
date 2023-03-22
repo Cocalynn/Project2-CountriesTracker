@@ -216,18 +216,21 @@ const userSchema = new Schema(
     visitedCountries: [
       {
         from: {
-          country:String,
-          coordinates: [Number,Number]
-        }, 
+          country: String,
+          coordinates: [Number, Number],
+        },
         to: {
-          country:String,
-          coordinates: [Number,Number]
-        }
-      }
+          country: String,
+          coordinates: [Number, Number],
+        },
+      },
     ],
     plannedCountries: [
       {
-        type: String,
+        country: {
+          type: Schema.Types.ObjectId,
+          ref: "Country",
+        },
       },
     ],
     email: {

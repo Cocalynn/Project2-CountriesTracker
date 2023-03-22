@@ -44,35 +44,83 @@ chart.chartContainer.get("background").events.on("click", function () {
   chart.goHome();
 });
 
+// Get countries inside the DB for the user
+async function getSavedCountries() {
+  const response = await fetch("/api/countries/saved");
+  const savedCountries = await response.json();
+  return savedCountries;
+}
+
+// fetch the object id property from the db
+async function getCountryObjectId(countryId) {
+  const response = await fetch(`/api/countries/cid/${countryId}`);
+  const country = await response.json();
+  return { countryObjectId: country._id, country };
+}
+
+// is the country already planned
+
+async function isCountryAlreadyPlanned(countryId) {
+  console.log("Checking if country is already planned:", countryId);
+  const savedCountries = await getSavedCountries();
+  console.log("Saved countries:", savedCountries);
+  return savedCountries.some((country) => country === countryId);
+}
+
 // Catch the country click event
 
-polygonSeries.mapPolygons.template.events.once("click", function (ev) {
-  const countryId = ev.target.dataItem.dataContext.name;
-  const isActive = ev.target.dataItem.dataContext.isActive;
-  console.log(isActive);
+polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
+  const countryId = ev.target.dataItem.dataContext.id;
+  const countryName = ev.target.dataItem.dataContext.name;
   console.log("Clicked on:", countryId);
 
-  // If country is active, don't update visitedTimes
-  if (isActive) {
+  const isCountryPlanned = await isCountryAlreadyPlanned(countryId);
+  console.log("Is country planned:", isCountryPlanned);
+
+  if (isCountryPlanned) {
+    alert("You have already planned to visit " + countryName + ".");
     return;
   }
 
-  // Otherwise, update visitedTimes and set isActive to true
-  ev.target.dataItem.dataContext.isActive = true;
-  fetch(`/api/countries/${countryId}/visited`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      visitedTimes: 1, // Increase visitedTimes by 1
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => console.log(data))
-    .catch((error) => console.error(error));
-});
+  // Get the ObjectId of the country from the database
+  const { countryObjectId, country } = await getCountryObjectId(countryId);
 
+  let nextCountryButton = document.getElementById("country-next-confirm");
+  let nextConfirmButton = document.getElementById("next-confirm-ok");
+
+  
+    let departure = document.getElementById("country-next");
+    departure.innerHTML = countryName;
+  
+
+  
+  nextConfirmButton.onclick = function () {
+    isJourneyLocked = true;
+    fetch(`/api/countries/${countryObjectId}/plan`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        plannedTimes: 1,
+        country, // Include the country object here
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Failed to update plannedTimes: " + response.statusText
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        location.reload(); // Reload the page
+      })
+      .catch((error) => console.error(error));
+  };
+});
 // Add zoom control
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-pan-zoom/#Zoom_control
 const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
@@ -89,12 +137,34 @@ const homeButton = zoomControl.children.moveValue(
   0
 );
 
+async function updateSavedCountriesSeries() {
+  const savedCountries = await getSavedCountries();
+  const savedCountriesData = [];
+
+  savedCountries.forEach((country) => {
+    savedCountriesData.push({
+      id: country.countryId,
+      latitude: country.latitude,
+      longitude: country.longitude,
+    });
+  });
+
+  chart.series.push(
+    am5map.MapPointSeries.new(root, {
+      data: savedCountriesData,
+      name: "Saved Countries",
+    })
+  );
+}
+
+updateSavedCountriesSeries();
+
 /**
  * Exporting map
  */
 const exporting = am5plugins_exporting.Exporting.new(root, {
   menu: am5plugins_exporting.ExportingMenu.new(root, {}),
-  filePrefix: "myVisitedMap",
+  filePrefix: "myPlannedMap",
 });
 
 homeButton.events.on("click", function () {

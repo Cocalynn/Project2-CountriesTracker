@@ -22,6 +22,9 @@ const countrySchema = new Schema(
             type: Number,
             default: 0,
         },
+        emoji: {
+            type: String,
+        },
         /* Optional
         description: {
             type: String,

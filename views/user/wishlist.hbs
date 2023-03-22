@@ -1,8 +1,54 @@
-  <div class="container mt-5">
-    <h1 class="text-center">Wishlist</h1>
-    <p class="text-center">Document your travels here!</p>
-    <div id="mapDiv" style="width: 100%; height: 500px;"></div>
+<div class="container mt-5">
+  <p>Hello
+    {{user.username}}! Your ID is
+    <span id="user-id">{{user._id}}</span></p>
+  <p> Document your future travels on the map!</p>
+  <div class="row">
+    <div class="col-lg-8 mb-5">
+      <div id="mapDiv" style="width: 100%; height: 500px;"></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="row">
+        <div class="col">
+          <div>
+            <span class="input-group-text mb1">Next destination:</span>
+            <span class="form-control mb1" id="country-next"></span></div>
+          <button id="next-confirm-ok" class="btn btn-success mt-3">
+            SAVE
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="travel-records"
+        class="mt-3"
+        style="height: 300px; overflow-y: scroll;"
+      >
+        <h4>Future Travel</h4>
+        {{#each currentUser.plannedCountries}}
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <div>Next on the list:
+                  <br />
+                  <br />
+                  <h5> {{country.emoji}} {{country.name}}</h5>
+                </div>
+                <form
+                  action="/api/plan/delete/{{country._id}}"
+                  method="post"
+                  class="mt-2"
+                >
+                  <button class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
   </div>
+</div>
 
 <script src="/js/script.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
