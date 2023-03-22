@@ -21,8 +21,9 @@
             >Confirm</button>
           </div>
           <div class="col-sm-4">
-            <button id="next-confirm-ok" class="btn btn-success mt-3">Save
-              future Travel</button>
+            <button id="next-confirm-ok" class="btn btn-success mt-3">
+              SAVE
+            </button>
           </div>
         </div>
       </div>
@@ -36,7 +37,7 @@
                 <h5>📍{{country.name}}</h5>
               </div>
               <form
-                action="/plan/delete/{{country._id}}"
+                action="/api/plan/delete/{{country._id}}"
                 method="post"
                 class="mt-2"
               >
