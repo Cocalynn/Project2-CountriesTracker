@@ -1,4 +1,3 @@
-let isNextLocked = false;
 // Create root element
 // https://www.amcharts.com/docs/v5/getting-started/#Root_element
 const root = am5.Root.new("mapDiv");
@@ -89,21 +88,12 @@ polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
   let nextCountryButton = document.getElementById("country-next-confirm");
   let nextConfirmButton = document.getElementById("next-confirm-ok");
 
-  if (!isNextLocked) {
+  
     let departure = document.getElementById("country-next");
     departure.innerHTML = countryName;
-  }
+  
 
-  nextCountryButton.onclick = function () {
-    isNextLocked = true;
-    nextCountryButton.disabled = true;
-    nextCountryButton.style.backgroundColor = "grey";
-    nextCountryButton.style.color = "white";
-    nextCountryButton.style.cursor = "not-allowed";
-    nextCountryButton.innerHTML = "Confirmed";
-    isJourneyLocked = false;
-  };
-
+  
   nextConfirmButton.onclick = function () {
     isJourneyLocked = true;
     fetch(`/api/countries/${countryObjectId}/plan`, {
