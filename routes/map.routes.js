@@ -144,7 +144,7 @@ router.put("/countries/:countryObjectId/plan", async (req, res) => {
 });
 
 // Delete planned country route
-router.post("/plan/delete/:countryObjectId", isLoggedIn, async (req, res) => {
+router.post("/plan/delete/:countryObjectId", async (req, res) => {
   const { countryObjectId } = req.params;
   const user = req.session.currentUser.username;
 
