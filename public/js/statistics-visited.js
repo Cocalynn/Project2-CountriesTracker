@@ -44,7 +44,7 @@ polygonSeries.mapPolygons.template.events.on("pointerover", function(ev) {
 });
 
 
-fetch('http://localhost:3000/api/countries')
+fetch('https://friendly-hare-pea-coat.cyclic.app/api/countries')
 .then((res) => res.json())
 .then((countryData) => {
     var data = []
