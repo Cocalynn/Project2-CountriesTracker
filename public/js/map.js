@@ -59,12 +59,29 @@ async function getCountryObjectId(countryId) {
   return { countryObjectId: country._id, country };
 }
 
+// is the country already planned
+
+async function isCountryAlreadyPlanned(countryId) {
+  console.log("Checking if country is already planned:", countryId);
+  const savedCountries = await getSavedCountries();
+  console.log("Saved countries:", savedCountries);
+  return savedCountries.some((country) => country === countryId);
+}
+
 // Catch the country click event
 
 polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
   const countryId = ev.target.dataItem.dataContext.id;
   const countryName = ev.target.dataItem.dataContext.name;
   console.log("Clicked on:", countryId);
+
+  const isCountryPlanned = await isCountryAlreadyPlanned(countryId);
+  console.log("Is country planned:", isCountryPlanned);
+
+  if (isCountryPlanned) {
+    alert("You have already planned to visit " + countryName + ".");
+    return;
+  }
 
   // Get the ObjectId of the country from the database
   const { countryObjectId, country } = await getCountryObjectId(countryId);
@@ -129,6 +146,28 @@ const homeButton = zoomControl.children.moveValue(
   }),
   0
 );
+
+async function updateSavedCountriesSeries() {
+  const savedCountries = await getSavedCountries();
+  const savedCountriesData = [];
+
+  savedCountries.forEach((country) => {
+    savedCountriesData.push({
+      id: country.countryId,
+      latitude: country.latitude,
+      longitude: country.longitude,
+    });
+  });
+
+  chart.series.push(
+    am5map.MapPointSeries.new(root, {
+      data: savedCountriesData,
+      name: "Saved Countries",
+    })
+  );
+}
+
+updateSavedCountriesSeries();
 
 /**
  * Exporting map
