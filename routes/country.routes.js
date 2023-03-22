@@ -65,20 +65,17 @@ router.post(
 // GET /wishlist
 router.get("/wishlist", isLoggedIn, (req, res) => {
   User.findById(req.session.currentUser._id)
+    .populate("plannedCountries.country") // Add this line
     .then((currentUser) => {
-      if (req.session.currentUser.role === "admin") {
-        res.render("user/wishlist", {
-          user: req.session.currentUser,
-          currentUser: currentUser,
-          layout: "layout/admin-layout",
-        });
-      } else if (req.session.currentUser.role === "user") {
-        res.render("user/wishlist", {
-          user: req.session.currentUser,
-          currentUser: currentUser,
-          layout: "layout/user-layout",
-        });
-      }
+      res.render("user/wishlist", {
+        user: req.session.currentUser,
+        currentUser: currentUser,
+        plannedCountries: currentUser.plannedCountries,
+        layout:
+          req.session.currentUser.role === "admin"
+            ? "layout/admin-layout"
+            : "layout/user-layout",
+      });
     })
     .catch((err) => {
       console.log(err);

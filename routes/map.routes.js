@@ -28,7 +28,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-//Post /wishlist
+//Post /wishlist TODO check this
 router.post("/visited/delete/:planCountry", isLoggedIn, async (req, res) => {
   console.log(req.params);
   const { planCountry } = req.params;
@@ -92,23 +92,42 @@ router.get("/countries", async (req, res) => {
   }
 });
 
+// get the CID from the map and look for it on the db
+
+router.get("/countries/cid/:cid", async (req, res) => {
+  const { cid } = req.params;
+
+  try {
+    const country = await Country.findOne({ cid: cid });
+    if (!country) {
+      return res.status(404).send();
+    }
+    res.send(country);
+  } catch (error) {
+    console.error("Error in GET route:", error);
+    res.status(500).send({ error: error.message });
+  }
+});
+
 // Route to update the plannedTimes field
-router.put("/countries/:countryId/plan", async (req, res) => {
-  const { countryId } = req.params;
+router.put("/countries/:countryObjectId/plan", async (req, res) => {
+  const { countryObjectId } = req.params;
   console.log(req.params);
-  const { plannedTimes } = req.body;
+  const { plannedTimes, country } = req.body; // Get the country object from the request body
+  console.log(country);
   const user = req.session.currentUser.username;
   console.log({ user: user });
 
   try {
+    // Update the user model with the entire country object
     const updatedUser = await User.findOneAndUpdate(
       { username: user },
-      { $addToSet: { plannedCountries: countryId } },
+      { $addToSet: { plannedCountries: { country: country } } }, // Store the entire country object
       { new: true }
     );
 
     const updatedCountry = await Country.findOneAndUpdate(
-      { cid: countryId },
+      { _id: countryObjectId },
       { $inc: { plannedTimes: plannedTimes } },
       { new: true }
     );
@@ -119,13 +138,34 @@ router.put("/countries/:countryId/plan", async (req, res) => {
 
     res.send(updatedCountry);
   } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
+    console.error("Error in PUT route:", error);
+    res.status(500).send({ error: error.message });
   }
 });
 
-// Delete country route
-router.delete("/delete/:countryId", (req, res) => {});
+// Delete planned country route
+router.post("/plan/delete/:countryObjectId", isLoggedIn, async (req, res) => {
+  const { countryObjectId } = req.params;
+  const user = req.session.currentUser.username;
+
+  try {
+    const currentUser = await User.findOne({ username: user });
+    currentUser.plannedCountries = currentUser.plannedCountries.filter(
+      (plannedCountry) => plannedCountry.country.toString() !== countryObjectId
+    );
+    await currentUser.save();
+
+    await Country.findOneAndUpdate(
+      { _id: countryObjectId },
+      { $inc: { plannedTimes: -1 } },
+      { new: true }
+    );
+
+    res.redirect("/wishlist");
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 router.put("/visited/:userId", async (req, res) => {
   const userId = req.params.userId;

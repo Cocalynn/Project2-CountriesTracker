@@ -45,23 +45,33 @@ chart.chartContainer.get("background").events.on("click", function () {
   chart.goHome();
 });
 
+// fetch the object id property from the db
+async function getCountryObjectId(countryId) {
+  const response = await fetch(`/api/countries/cid/${countryId}`);
+  const country = await response.json();
+  return { countryObjectId: country._id, country };
+}
+
 // Catch the country click event
 
-polygonSeries.mapPolygons.template.events.once("click", function (ev) {
-  const countryId = ev.target.dataItem.dataContext.name;
+polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
+  const countryId = ev.target.dataItem.dataContext.id;
+  const countryName = ev.target.dataItem.dataContext.name;
   console.log("Clicked on:", countryId);
+
+  // Get the ObjectId of the country from the database
+  const { countryObjectId, country } = await getCountryObjectId(countryId);
 
   let nextCountryButton = document.getElementById("country-next-confirm");
   let nextConfirmButton = document.getElementById("next-confirm-ok");
 
   if (!isNextLocked) {
     let departure = document.getElementById("country-next");
-    departure.innerHTML = countryId;
+    departure.innerHTML = countryName;
   }
 
   nextCountryButton.onclick = function () {
     isNextLocked = true;
-    // lock the value of departure.innerHTML
     nextCountryButton.disabled = true;
     nextCountryButton.style.backgroundColor = "grey";
     nextCountryButton.style.color = "white";
@@ -72,17 +82,29 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
 
   nextConfirmButton.onclick = function () {
     isJourneyLocked = true;
-    fetch(`/api/countries/${countryId}/plan`, {
+    fetch(`/api/countries/${countryObjectId}/plan`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        plannedTimes: 1, // Increase plannedTimes by 1
+        plannedTimes: 1,
+        country, // Include the country object here
       }),
     })
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Failed to update plannedTimes: " + response.statusText
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        location.reload(); // Reload the page
+      })
+      .catch((error) => console.error(error));
   };
 });
 // Add zoom control

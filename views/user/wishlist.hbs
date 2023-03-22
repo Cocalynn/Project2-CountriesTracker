@@ -21,8 +21,8 @@
             >Confirm</button>
           </div>
           <div class="col-sm-4">
-            <button id="next-confirm-ok" class="btn btn-success mt-3">Save future
-              Travel</button>
+            <button id="next-confirm-ok" class="btn btn-success mt-3">Save
+              future Travel</button>
           </div>
         </div>
       </div>
@@ -31,9 +31,12 @@
         {{#each currentUser.plannedCountries}}
           <div class="card mb-3">
             <div class="card-body">
-              <div>Next destination: {{this}}</div>
+              <div>Next on the list:
+                <br />
+                <h5>📍{{country.name}}</h5>
+              </div>
               <form
-                action="/visited/delete/{{this}}"
+                action="/plan/delete/{{country._id}}"
                 method="post"
                 class="mt-2"
               >
