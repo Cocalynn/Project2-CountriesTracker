@@ -69,7 +69,7 @@ async function isCountryAlreadyPlanned(countryId) {
 
 // Catch the country click event
 
-polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
+polygonSeries.mapPolygons.template.events.on("click", async function (ev) {
   const countryId = ev.target.dataItem.dataContext.id;
   const countryName = ev.target.dataItem.dataContext.name;
   console.log("Clicked on:", countryId);
@@ -78,7 +78,13 @@ polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
   console.log("Is country planned:", isCountryPlanned);
 
   if (isCountryPlanned) {
-    alert("You have already planned to visit " + countryName + ".");
+    Swal.fire({
+      title: "Oops!",
+      text: "You have already planned to visit " + countryName + ".",
+      icon: "error",
+      confirmButtonText: "Cancel",
+      confirmButtonColor: "#dc3545",
+    });
     return;
   }
 
@@ -88,12 +94,9 @@ polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
   let nextCountryButton = document.getElementById("country-next-confirm");
   let nextConfirmButton = document.getElementById("next-confirm-ok");
 
-  
-    let departure = document.getElementById("country-next");
-    departure.innerHTML = countryName;
-  
+  let departure = document.getElementById("country-next");
+  departure.innerHTML = countryName;
 
-  
   nextConfirmButton.onclick = function () {
     isJourneyLocked = true;
     fetch(`/api/countries/${countryObjectId}/plan`, {
