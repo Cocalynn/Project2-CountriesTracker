@@ -19,7 +19,7 @@ CountriesTracker is ...
 ### Git
 URls for the project repo and deploy
 
-Repo: 
+Repo: https://github.com/Cocalynn/Project2-CountriesTracker
 
 Deployment: https://friendly-hare-pea-coat.cyclic.app/
 
