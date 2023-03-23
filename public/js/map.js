@@ -69,7 +69,7 @@ async function isCountryAlreadyPlanned(countryId) {
 
 // Catch the country click event
 
-polygonSeries.mapPolygons.template.events.once("click", async function (ev) {
+polygonSeries.mapPolygons.template.events.on("click", async function (ev) {
   const countryId = ev.target.dataItem.dataContext.id;
   const countryName = ev.target.dataItem.dataContext.name;
   console.log("Clicked on:", countryId);
