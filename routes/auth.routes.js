@@ -216,7 +216,12 @@ const nationalities = nationalitiesArr.map(x=>{return {name:x}})
 
 // Home page 
 router.get("/", (req, res) => {
-  res.render("auth/signup", {nationalities: nationalities, layout: "layout/guest-layout"});
+  // If user is logged in (user or admin)
+  if (req.session.currentUser) {
+    res.redirect("/visited");
+  } else {
+    res.render("auth/signup", { nationalities: nationalities, layout: "layout/guest-layout" });
+  }
 });
 
 
