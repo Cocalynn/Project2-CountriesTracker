@@ -25,6 +25,7 @@ At Countries Tracker, we're committed to providing a simple, intuitive, and enjo
 
 ## Data Structure
 
+```bash
 Project2-CountriesTracker/
 │ 
 ├── config/
@@ -101,7 +102,7 @@ Project2-CountriesTracker/
 ├── package.json
 ├── server.js
 └── README.md
-
+```
 
 
 ## Links
