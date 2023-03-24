@@ -164,9 +164,13 @@ polygonSeries.mapPolygons.template.events.once("click", function (ev) {
         isArrivalLocked = false;
         departureCountry = countryId;
         departureCoordinates = currentCoordinates;
+
+        // disable confirm journey button
+        journeyConfirmButton.disabled = true;
     }
     arrivalConfirmButton.onclick = function() {
         isArrivalLocked = true;
+        journeyConfirmButton.disabled = false;
         // lock the value of arrival.innerHTML
         arrivalConfirmButton.disabled = true;
         arrivalConfirmButton.style.backgroundColor = "grey";
