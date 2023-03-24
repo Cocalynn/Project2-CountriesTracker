@@ -25,6 +25,84 @@ At Countries Tracker, we're committed to providing a simple, intuitive, and enjo
 
 ## Data Structure
 
+Project2-CountriesTracker/
+│ 
+├── config/
+│   ├── index.js
+│   └── session.config.js 
+│
+├── db/
+│   └── index.js 
+│
+├── error-handling/
+│   └── index.js 
+│
+├── middleware/
+│   ├── isAdmin.js
+│   ├── isLoggedIn.js
+│   └── isLoggedOut.js 
+│ 
+├── models/
+│   ├── User.model.js
+│   └── Country.model.js 
+│
+├── public/
+│   ├── css/
+│   │   └── styles.css
+│   ├── js/
+│   │   ├── map-line-series.js
+│   │   ├── map.js
+│   │   ├── script.js
+│   │   ├── statistics-visited.js
+│   │   └── statistics-wishlist.js
+│   ├── stylesheets/
+│   │   └── style.css
+│   ├── images/
+│   │   ├── background.png
+│   │   ├── favicon.ico
+│   │   └── logo.png
+│
+├── routes/
+│   ├── about.routes.js
+│   ├── auth.routes.js
+│   ├── country.routes.js
+│   └── map.routes.js
+│
+├── seeds/
+│   └── seeds.js
+│
+├── utils/
+│   └── capitalize.js
+│
+├── views/
+│   ├── admin/
+│   │   ├── statistics-visited.hbs
+│   │   └── statistics-wishlist.hbs
+│   ├── auth/
+│   │   ├── login.hbs
+│   │   ├── logout.hbs
+│   │   └── signup.hbs
+│   ├── user/
+│   │   ├── about-us.hbs
+│   │   ├── user-profile.hbs
+│   │   ├── visited.hbs
+│   │   └── wishlisth.hbs
+│   ├── layout/
+│   │   ├── guest-layout.hbs
+│   │   ├── user-layout.hbs
+│   │   └── admin-layout.hbs
+│   ├── error.hbs
+│   ├── index.hbs
+│   └── not-found.hbs
+│
+├── .gitignore 
+├── app.js
+├── package-lock.json
+├── package.json
+├── server.js
+└── README.md
+
+
 
 ## Links
 
