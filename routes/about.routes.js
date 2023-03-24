@@ -12,11 +12,14 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const isAdmin = require("../middleware/isAdmin");
 
 // GET /aboutus
-router.get("/aboutus", isLoggedIn, (req, res) => {
-    if (req.session.currentUser.role === "admin") {
+router.get("/aboutus", (req, res) => {
+    let currentUser = req.session.currentUser || {}
+    if (currentUser.role === "admin") {
     res.render("user/about-us", { layout:"layout/admin-layout" });
-    } else if (req.session.currentUser.role === "user") {
+    } else if (currentUser.role === "user") {
     res.render("user/about-us", { layout:"layout/user-layout" });
+    } else {
+    res.render("user/about-us", { layout:"layout/guest-layout" });
     }
 });
 
