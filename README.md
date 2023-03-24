@@ -120,6 +120,8 @@ https://docs.google.com/presentation/d/1_zJdnozU1_E5Ybgoqhuzhw13ad21Tn0aGDaTd7fl
 
 
 ### Library resource: 
+`amCharts 5`: A JavaScript library for creating fast and customizable map data visualizations
+
 `@turf/turf`: A geospatial analysis library for performing spatial operations on geographic data.
 
 `bcrypt and bcryptjs`: Libraries for hashing passwords securely.
